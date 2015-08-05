@@ -1,0 +1,29 @@
+GamePower FREE Edition License
+
+NOTE: PLEASE READ, THIS IS NOT YOUR COMMON EULA, LONG-BORING-TEXT-YES-I-AGREE LICENSE AGREEMENT
+
+Note: these terms are subject to change without any further notice at any time.
+
+The TL;DR (too long, didn't read) version:
+
+You can do anything you want as long as you share any modifications you make to the engine (and might win a month or two of paid version usage for free), don't get any revenues from the engine or games made with it and avoid making external tools to package your game into some sort of local webhost container (NW.js and such) since the paid version already does that for you (if you wish you can host the game in GP's website, that part is free as long as your game assets aren't huge). It will also include the engine's splash screen (cannot remove it) and will get the newest features a while after they're released in the paid version. Note: your games can be closed source along with the engine, but if you modify the engine you must open-source those changes.
+
+The long, "I'm a good person and I will read and comply with this" version:
+
+You're free to do whatever you want as long as you:
+
+    *  Open-source (share) any modifications made to the engine, taking in account we might implement those in next versions of the engine. Who knows, you could even win a month or two of paid usage, for free! :).
+
+    *  Don't get any revenues from any kind of resale, redistribution, all that GPL stuff (this also includes in-game ads, basically any kind of monetization) from the engine or games made with it.
+
+    *  Don't create external tools to pack the game into a binary form or local web server. The free version is meant for games to be hosted online and played over a browser (node-based ones don't count as a browser either). The paid version offers such alternative, and it's one I've been working really hard on. If you need to host your game, GamePower provides that service for free as long as your game assets aren't huge.
+
+However, the free version will:
+
+    *  Get the new features the paid version does 1-3 months later. Critical bugfixes will be applied immediately though.
+
+    *  Only pack your game in HTML format, with the raw source code (game and engine) exposed. It's up to you to find out how to protect your game code and assets.
+
+    *  Include a GamePower splash screen prior to initialization. You could remove it, but you wouldn't be playing fair then…
+
+Enjoy :)

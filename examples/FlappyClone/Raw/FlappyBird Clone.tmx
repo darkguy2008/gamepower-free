@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="20" height="15" tilewidth="32" tileheight="32" backgroundcolor="#c0dde3" nextobjectid="1">
+ <tileset firstgid="1" name="asddas|" tilewidth="32" tileheight="32" spacing="2" margin="2">
+  <image source="FREE GAME ART/SpriteLib/spritelib_gpl/platform/blocks1.png" trans="000000" width="640" height="400"/>
+ </tileset>
+ <tileset firstgid="199" name="dssda2" tilewidth="32" tileheight="32" spacing="2" margin="2">
+  <image source="FREE GAME ART/SpriteLib/spritelib_gpl/platform/blocks2.png" trans="000000" width="640" height="400"/>
+ </tileset>
+ <layer name="Tile Layer 1" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYKAMxAFxPBAnECkOA4lAnESh3bQAhNyNDSQDcQoQp9LCQWhAh5GBQReI9Rip4w47oDn2QOyAZp4mkK8FxNpY7MEFYHoCseixBorZALEtDvOw2QfTk4xDjx8et+Gyzw+H+wiZh0s+gUT3iTMicAIjKh8mVopFHIT9sIiNNAAAIgwRWg==
+  </data>
+ </layer>
+ <layer name="Tile Layer 4" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AUDAQQZ8Quhk0cl/qRBgBvjABh
+  </data>
+ </layer>
+ <layer name="Tile Layer 2" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxjYBgFo2AU0AuwMaLyn0Hpp2jqnqPxvyOx9ZHM2A7FO5DY2PjoYrjYu5DwPii9H0kMxH4HxfuQ2O+gcq+R8H40c3ahmbMLixnvsNiBbBYA0a0yeQ==
+  </data>
+ </layer>
+ <layer name="Tile Layer 3" width="20" height="15">
+  <data encoding="base64" compression="zlib">
+   eJxrZ2BgaGfADdrR5EnlDzbzqK2fkHmkylPbPGr7Z6jH/3DjjzQAADeEL3c=
+  </data>
+ </layer>
+</map>

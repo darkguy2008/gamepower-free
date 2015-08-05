@@ -1,0 +1,48 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GPIDE", "GPIDE\GPIDE.csproj", "{9E4946B0-9F40-492B-ADBB-571ED540F3BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FastColoredTextBox", "..\libs\External.FastColoredTextBox\FastColoredTextBox.csproj", "{6DD14A85-CCFC-4774-BD26-0F5772512319}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibGP.Utils", "..\libs\LibGP.Utils\LibGP.Utils.csproj", "{00261D04-8B71-42DA-A4A5-95950B58FBE0}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Libraries", "Libraries", "{9F2C7E18-3DD7-4CFD-9F1F-F6204E713E14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DebugServer", "DebugServer\DebugServer.csproj", "{FC507CF9-8414-481A-9BD6-50FE84A5266C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "IDE", "IDE", "{F0F30D67-F6E7-473F-A1C3-47404B3335F6}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9E4946B0-9F40-492B-ADBB-571ED540F3BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E4946B0-9F40-492B-ADBB-571ED540F3BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E4946B0-9F40-492B-ADBB-571ED540F3BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E4946B0-9F40-492B-ADBB-571ED540F3BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6DD14A85-CCFC-4774-BD26-0F5772512319}.Release|Any CPU.Build.0 = Release|Any CPU
+		{00261D04-8B71-42DA-A4A5-95950B58FBE0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{00261D04-8B71-42DA-A4A5-95950B58FBE0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{00261D04-8B71-42DA-A4A5-95950B58FBE0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{00261D04-8B71-42DA-A4A5-95950B58FBE0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FC507CF9-8414-481A-9BD6-50FE84A5266C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FC507CF9-8414-481A-9BD6-50FE84A5266C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FC507CF9-8414-481A-9BD6-50FE84A5266C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FC507CF9-8414-481A-9BD6-50FE84A5266C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{00261D04-8B71-42DA-A4A5-95950B58FBE0} = {9F2C7E18-3DD7-4CFD-9F1F-F6204E713E14}
+		{6DD14A85-CCFC-4774-BD26-0F5772512319} = {9F2C7E18-3DD7-4CFD-9F1F-F6204E713E14}
+		{FC507CF9-8414-481A-9BD6-50FE84A5266C} = {F0F30D67-F6E7-473F-A1C3-47404B3335F6}
+		{9E4946B0-9F40-492B-ADBB-571ED540F3BF} = {F0F30D67-F6E7-473F-A1C3-47404B3335F6}
+	EndGlobalSection
+EndGlobal
