@@ -8,6 +8,8 @@ So you want to make games...
 
 Then look no further! This *may* very well be the game engine you've been looking for in ages.
 
+**Website:** http://gamepower.no-ip.org/
+
 ## What?
 
 **GamePower (GP) is a JavaScript HTML5 Canvas-based game engine** developed by DARKGuy/Alemar, designed with speed and ease of use in mind. It contains its very own set of tools (IDE, converters, debuggers) to help you develop that game you've always wanted to do but couldn't because the game engines out there are too complicated to use or require to spend too much time in learning how to use them.
@@ -124,5 +126,3 @@ There are two versions, **Free** and **Paid**:
   
     * **Exclusive**: The access to the service is non-transferrable and applies to an individual, a group or a company, depending on the chosen license.
     * **You can sell your games,** but you can't sell the engine though. You pay for the service usage, not for the rights of the entire commercial engine source code even if you manage to demistify it. You may modify and enhance the paid version engine for your own games, but you cannot sell those modifications.
-
-    **Pay attention though**, that once you acquire any monthly quantity of the paid version, **it cannot be refunded for now** as it is prepaid, and while I could make some calculations and give you a refund for the unused service time if you cancel your subscription sometime, I live in a country where I can't convert local currency **to** USD. I'd like to offer something better, but until I move from this country, I can't do much. That's why I offer the free version, so you can play with the engine as much as you want and decide if you want to use the service or not.
