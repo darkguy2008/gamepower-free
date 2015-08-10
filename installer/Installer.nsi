@@ -4,7 +4,7 @@
 
 !define VERSIONMAJOR 0
 !define VERSIONMINOR 8
-!define VERSIONBUILD 0
+!define VERSIONBUILD 1
 
 !define HELPURL "http://gamepower.no-ip.org/"
 !define UPDATEURL "http://gamepower.no-ip.org/"
@@ -20,7 +20,7 @@ LicenseData "..\resources\License.rtf"
 # This will be in the installer/uninstaller's title bar
 Name "${APPNAME}"
 Icon "app.ico"
-outFile "..\GamePower FREE ${VERSIONMAJOR}.${VERSIONMINOR}.exe"
+outFile "..\GamePower FREE ${VERSIONMAJOR}.${VERSIONMINOR}.${VERSIONBUILD}.exe"
 
 !include LogicLib.nsh
 

@@ -15,6 +15,9 @@ mkdir dist\runtime
 xcopy /s /e /y runtime\* dist\runtime
 copy resources\fontinstall.vbs dist
 
+call:copyDir examples examples
+call:copyDir docs docs
+
 goto :eof
 
 :copyBin
@@ -23,6 +26,13 @@ goto :eof
 	copy %SRC%\*.dll dist
 	copy %SRC%\*.ini dist
 	copy %SRC%\*.ttf dist
+goto :eof
+
+:copyDir
+	SET "DST=%~1"
+	SET "SRC=%~2"
+	mkdir dist\%DST%
+	xcopy /s /e /y %SRC%\* dist\%DST%
 goto :eof
 
 :eof

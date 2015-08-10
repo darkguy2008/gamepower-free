@@ -20,6 +20,7 @@ namespace LibGP.Lite
         private String _filename;
         public String TempFolder;
         public List<GPBitmap> Bitmaps = new List<GPBitmap>();
+        public bool IsOpen { get { return !String.IsNullOrEmpty(TempFolder); } }
 
         public GPK(String filename) { _filename = filename; }
 

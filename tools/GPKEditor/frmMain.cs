@@ -58,10 +58,13 @@ namespace GPKEditor
                 }
                 else
                 {
-                    foreach (String f in files)
-                        if (f.ToLowerInvariant().EndsWith("png"))
-                            GPKAdd(f);
-                    FPGRefresh();
+                    if (Gpk != null)
+                    {
+                        foreach (String f in files)
+                            if (f.ToLowerInvariant().EndsWith("png"))
+                                GPKAdd(f);
+                        FPGRefresh();
+                    }
                 }
             }
         }
@@ -246,12 +249,10 @@ namespace GPKEditor
                     lvi.Add(i);
                 foreach (ListViewItem i in lvContent.SelectedItems)
                     lvContent.Items.Remove(i);
+                Gpk.Open();
                 foreach (ListViewItem i in lvi)
-                {
-                    Gpk.Open();
                     File.Delete(Gpk.TempFolder + Gpk.Bitmaps.Single(x => x.Code == int.Parse(i.ImageKey)).Filename);
-                    Gpk.Close();
-                }
+                Gpk.Close();
                 FPGRefresh();
             }
         }
@@ -342,6 +343,9 @@ namespace GPKEditor
             Image mImage = new Bitmap(dImage);
             dImage.Dispose();
 
+            Gpk = GPK.Load(Filename);
+            Gpk.Open();
+
             // TODO: Prevent > 999
             GPBitmap bmp = new GPBitmap()
             {
@@ -354,13 +358,19 @@ namespace GPKEditor
                 Bitmap = mImage
             };
 
-            Gpk.Open();
             if(Gpk.PackageType == GPK.GPKType.Graphics)
                 bmp.Save(Gpk.TempFolder + bmp.Code.ToString().PadLeft(3, '0') + "_" + bmp.Filename);
             else
                 bmp.Save(Gpk.TempFolder + bmp.Code.ToString().PadLeft(3, '0'));
+
             Gpk.Close();
         }
         #endregion
+
+        private void lvContent_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.KeyCode == Keys.Delete)
+                tsDelete_Click(lvContent, null);
+        }
     }
 }

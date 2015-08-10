@@ -125,6 +125,7 @@
             this.lvContent.TileSize = new System.Drawing.Size(50, 50);
             this.lvContent.UseCompatibleStateImageBehavior = false;
             this.lvContent.DoubleClick += new System.EventHandler(this.lvContent_DoubleClick);
+            this.lvContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvContent_KeyDown);
             // 
             // frmMain
             // 
