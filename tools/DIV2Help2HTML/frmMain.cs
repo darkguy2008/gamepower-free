@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
 
-namespace FPG2GPK
+namespace DIV2Help2HTML
 {
     public partial class frmMain : Form
     {
@@ -28,7 +28,7 @@ namespace FPG2GPK
             {
                 try
                 {
-                    Converter.BatchConvert(files);
+                    Converter.BatchConvert(files, cbMSDOS.Checked);
                 }
                 catch (Exception ex)
                 {

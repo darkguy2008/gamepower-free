@@ -7,6 +7,7 @@ call:copyBin tools\FNT2GPK\bin\Debug
 call:copyBin IDE\GPIDE\bin\Debug
 call:copyBin tools\GPKEditor\bin\Debug
 call:copyBin tools\Littera2GPK\bin\Debug
+call:copyBin tools\DIV2Help2HTML\bin\Debug
 del dist\*.vshost.exe
 
 rmdir /s /q dist\runtime
