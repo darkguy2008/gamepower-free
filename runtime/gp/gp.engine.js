@@ -25,6 +25,8 @@ var GPEngine = Class.extend({
 		this.paused = false;
 		this.debug = false;
 
+		this.Flags = {};
+
 		this.parentProcess = null;
 		this.callerProcess = null;
 		this.ResMgr = new GPResourceManager();

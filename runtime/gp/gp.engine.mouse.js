@@ -17,9 +17,12 @@ var GPMouse = GPProcess.extend({
 		this.sup();
 		this.type = "mouse";
 		this._type = "mouse";
-	    this.z = -50000;
-	    var _sz = 1;
+	    this.z = -512;
+	    
+		this.left = false;
+		this.right = false;
 
+	    var _sz = 1;
 		var tmp = document.createElement("canvas");
 		var tmpCx = tmp.getContext('2d');
 	    tmp.width = _sz;
@@ -53,20 +56,21 @@ var GPMouse = GPProcess.extend({
 		tmpCx = null;
 
 		var self = this;
-		this.SubDraw = function(c)
-		{
-			if(self.graph != 0)
+		this.SubUpdate = function() {
+			if(self.graph == 0)
 			{
-				c.save();
-				c.translate(self.x + ox, self.y + oy);
-				c.rotate(-( (self.angle / 1000) * Math.PI / 180));
-				c.scale(self.size / 100, self.size / 100);
-			 	c.drawImage(self._map._img, this.x, this.y);
-			 	c.restore();
-		 	}
-		 }
+				if(getAttrCSS(_gp.CScreen._canvas, "cursor") != "auto")
+					$(_gp.CScreen._canvas).css("cursor", "auto");
+			}
+			else
+			{
+				if(getAttrCSS(_gp.CScreen._canvas, "cursor") != "none")
+					$(_gp.CScreen._canvas).css("cursor", "none");				
+			}
+		}
+
 		this.SubDrawMask = function(c, ox, oy)
-		{
+		{			
 			if(self.graph != 0)
 			{
 				c.save();

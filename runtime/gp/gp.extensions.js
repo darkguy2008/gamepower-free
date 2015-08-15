@@ -234,3 +234,8 @@ Array.prototype.filter = function(fn) {
     }
     return rv;
 };
+
+// http://stackoverflow.com/questions/2239567/jquery-check-if-element-has-css-attribute
+getAttrCSS = function(e, attr) {
+    return $(e).filter(function() { return $(e).css(attr).length > 0; }).eq(0).css(attr);
+};

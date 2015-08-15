@@ -19,7 +19,7 @@ var GPText = GPProcess.extend({
 		this.text = "";
 		this._type = "text";
 		this._textOld = "";
-		this.z = -128;
+		this.z = text_z;
 		this.center = 0;
 		this.SubDraw = this._SubDraw;
 		this.canvas = document.createElement("canvas");
@@ -32,6 +32,7 @@ var GPText = GPProcess.extend({
 	_SubDraw: function(cx) {
 		var glyph;
 		var self = this;
+		this.z = text_z;
 
 		if(this.font == null)
 			this.font = _gp.res.fnt[_gp._listFNT[this.idFont]];

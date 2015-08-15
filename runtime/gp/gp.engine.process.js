@@ -91,6 +91,8 @@ var GPProcess = Class.extend({
 					dy = -scr.y0 + self.y / (self.resolution == 0 ? 1 : self.resolution);
 				}
 
+				// See: http://jsperf.com/drawimage-vs-canvaspattern/9
+
 				s._ctx.save();
 				s._ctx.translate(dx, dy);
 				if(self.angle != 0)
@@ -104,7 +106,7 @@ var GPProcess = Class.extend({
 	},
 
 	DrawMask: function(cx, ox, oy) {
-		if(this.SubDraw != undefined) {
+		if(this.SubDrawMask != undefined) {
 			this.SubDrawMask(cx, ox, oy);
 			return;
 		}

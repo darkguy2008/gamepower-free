@@ -61,6 +61,12 @@ namespace gpc
         public EKeywordState State;
         public String InnerCode;
         public String Output;
+
+        public override string ToString()
+        {
+            return idControl + " | " + Keyword.ToString() + ", " + State.ToString() + " | " + Output + " (" + InnerCode + ")";
+            //return base.ToString();
+        }
     }
 
     public class GPCompiler
@@ -105,6 +111,8 @@ namespace gpc
         }
         public Dictionary<String, EResourceType> Resources = new Dictionary<String, EResourceType>();
 
+        public List<int> usedId = new List<int>();
+
         public GPCmd Compile(List<String> lines)
         {
             GPParser p = new GPParser();
@@ -122,6 +130,7 @@ namespace gpc
             bool IsAddingVariables = false;
             int iControl = 1;
             int iControlLast = 0;
+            usedId = new List<int>();
             foreach (String sCommand in Cmd)
             {
                 String raw = sCommand;
@@ -159,6 +168,7 @@ namespace gpc
                             iControl = 1;
                             break;
                         case "process":
+                            // If curCmd == null - extra end without opening if/loop/etc.
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Process, Name = sName, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
@@ -171,7 +181,8 @@ namespace gpc
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             iControlLast = iControl;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
 
                         case "repeat":
@@ -180,11 +191,13 @@ namespace gpc
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             iControlLast = iControl;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
                         case "until":
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = iControlLast, Arguments = sArguments });
                             curCmd = curCmd.Parent;
+                            //iControl--;
                             break;
 
                         case "while":
@@ -193,7 +206,8 @@ namespace gpc
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             iControlLast = iControl;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
 
 
@@ -204,7 +218,8 @@ namespace gpc
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             iControlLast = iControl;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
 
                         case "for":
@@ -214,7 +229,8 @@ namespace gpc
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             iControlLast = iControl;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
 
                         case "if":
@@ -222,17 +238,19 @@ namespace gpc
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControl++;
+                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
+                            usedId.Add(iControl);
                             break;
                         case "else":
-                            iControl--;
+                            iControl-=2;
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = iControl });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControl++;
+                            //iControl++;
                             break;
                         case "end":
+                            //iControl--;
                             curCmd = curCmd.Parent;
                             break;
 
@@ -662,6 +680,11 @@ namespace gpc
                     preJSLines.IndexOf(
                         preJSLines.Where(y =>
                             y.idControl == x.idControl &&
+                            (y.Keyword == EKeyword.For ||
+                             y.Keyword == EKeyword.From ||
+                             y.Keyword == EKeyword.Loop ||
+                             y.Keyword == EKeyword.Repeat ||
+                             y.Keyword == EKeyword.While) &&
                             y.State == EKeywordState.End
                         ).Single()
                     ) + 1
@@ -671,6 +694,7 @@ namespace gpc
             // Handle IFs
             // TODO: Implement different logic, for ELSEs and such
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.End).ToList().ForEach(x => x.Output = "/* ENDIF */");
+            preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Condition).ToList().ForEach(x => x.Output = "/* IF -> ELSE */");
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Condition)
                 .ToList()
                 .ForEach(x =>
@@ -681,7 +705,7 @@ namespace gpc
                             y.Keyword == EKeyword.If &&
                             y.State == EKeywordState.End
                         ).First()
-                    )
+                    ) + 1
                     ) + ""
                 );
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Begin)
@@ -771,11 +795,11 @@ namespace gpc
         public String Sanitize(String line)
         {
             String rv = line;
-            if (line.ToLowerInvariant().Trim().StartsWith("load_fpg(\"")) { rv = line.Replace("\\", "/"); }
-            if (line.ToLowerInvariant().Trim().StartsWith("load_fnt(\"")) { rv = line.Replace("\\", "/"); }
-            if (line.ToLowerInvariant().Trim().StartsWith("load_song(\"")) { rv = line.Replace("\\", "/"); }
-            if (line.ToLowerInvariant().Trim().StartsWith("load_wav(\"")) { rv = line.Replace("\\", "/"); }
-            if (line.ToLowerInvariant().Trim().StartsWith("load_pcm(\"")) { rv = line.Replace("\\", "/"); }
+            if (line.ToLowerInvariant().Trim().Contains("load_fpg(\"")) { rv = line.Replace("\\", "/"); }
+            if (line.ToLowerInvariant().Trim().Contains("load_fnt(\"")) { rv = line.Replace("\\", "/"); }
+            if (line.ToLowerInvariant().Trim().Contains("load_song(\"")) { rv = line.Replace("\\", "/"); }
+            if (line.ToLowerInvariant().Trim().Contains("load_wav(\"")) { rv = line.Replace("\\", "/"); }
+            if (line.ToLowerInvariant().Trim().Contains("load_pcm(\"")) { rv = line.Replace("\\", "/"); }
             return rv;
         }
 
@@ -827,7 +851,7 @@ namespace gpc
             String rv = line;
             String filename;
 
-            if (rv.ToLowerInvariant().StartsWith("load_fpg"))
+            if (rv.ToLowerInvariant().Contains("load_fpg"))
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));
@@ -835,7 +859,7 @@ namespace gpc
                 return rv;
             }
 
-            if (rv.ToLowerInvariant().StartsWith("load_fnt"))
+            if (rv.ToLowerInvariant().Contains("load_fnt"))
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));

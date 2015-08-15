@@ -16,3 +16,4 @@ var mouse = null;
 var _gp = new GPEngine();
 var scroll = _gp.CScrolls;
 var pi = Math.PI;
+var text_z = -256;

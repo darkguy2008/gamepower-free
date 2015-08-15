@@ -280,7 +280,7 @@ namespace GPIDE
                 RootFolder = Environment.SpecialFolder.Desktop,
                 ShowNewFolderButton = true
             };
-            if (dlg.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            if (dlg.ShowDialog() == DialogResult.OK)
             {
                 KillDebugProcess();
                 tsSave_Click(sender, e);
