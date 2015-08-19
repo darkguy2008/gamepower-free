@@ -21,3 +21,8 @@ function out_region(idP, idR) {
 		p.y > r.y + r.h
 	);
 }
+
+function define_region(idR, x, y, w, h)
+{
+	_gp.CRegions[idR].Define(x, y, w, h);
+}

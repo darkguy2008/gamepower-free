@@ -24,7 +24,7 @@ function write_int(fontId, x, y, center, obj, v)
 	p._code[0] = function() { p.text = obj[v].toString(); };
 	p._code[1] = function() { p.Frame(); };
 	p._code[2] = function() { p._instLocal = 0; };
-	_gp.AddProcess(p);
+	return _gp.AddProcess(p);
 }
 
 function write(fontId, x, y, center, text)
@@ -40,5 +40,11 @@ function write(fontId, x, y, center, text)
 	p._code[0] = function() { p.text = text; };
 	p._code[1] = function() { p.Frame(); };
 	p._code[2] = function() { p._instLocal = 0; };
-	_gp.AddProcess(p);
+	return _gp.AddProcess(p);
+}
+
+// TODO: all_text = remove all texts.
+function delete_text(idText)
+{
+	signal(idText, s_kill);
 }

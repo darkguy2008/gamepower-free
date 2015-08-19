@@ -46,6 +46,7 @@ var GPProcess = Class.extend({
 		this.son = null;
 		this.ctype = 0;
 		this.cnumber = 0;
+		this.region = 0;
 
 		this._oldGraph = 0;
 	},

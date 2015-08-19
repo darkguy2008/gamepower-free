@@ -11,10 +11,16 @@
     If not, see < http://www.gamepower.com/Info.aspx >.
 */
 
-put_screen = function(fpgId, id) {
+function put_screen(fpgId, id) {
 	var img = _gp.res.fpg[_gp._listFPG[fpgId]].data.filter(function(m) { return m.id == id })[0]._img;
 	_gp.CScreen.options.img = img;
 	_gp.CScreen.clear();
+}
+
+function clear_screen()
+{
+    _gp.CScreen.options.img = null;
+    _gp.CScreen.clear();    
 }
 
 // Dirty cheating with JQuery...

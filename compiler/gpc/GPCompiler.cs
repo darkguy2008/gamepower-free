@@ -380,6 +380,7 @@ namespace gpc
                 if (d2process.Keyword == EKeyword.Process)
                     d2process.InternalVariables.Add("type", "\"" + d2process.Name + "\"");
                 d2process.InternalVariables.Add("ctype", "(typeof ctype === 'undefined') ? c_screen : ctype");
+                d2process.InternalVariables.Add("region", "(typeof region === 'undefined') ? 0 : region");
 
                 if (d2process.Keyword != EKeyword.Program)
                     foreach (KeyValuePair<String, String> var in GlobalLocalVars)
