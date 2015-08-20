@@ -48,3 +48,10 @@ function delete_text(idText)
 {
 	signal(idText, s_kill);
 }
+
+function move_text(text, x, y)
+{
+	text.x = x;
+	text.y = y;
+}
+

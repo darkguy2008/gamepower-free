@@ -36,6 +36,7 @@ var c_7 = 7;
 var c_8 = 8;
 var c_9 = 9;
 
+// TODO: Implement signal(TYPE <nombre de proceso>, <señal>)
 function signal(arg1, val) {
 	var dest = arg1;
 	if(typeof arg1 === 'number') {

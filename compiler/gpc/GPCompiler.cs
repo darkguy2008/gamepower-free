@@ -777,7 +777,9 @@ namespace gpc
                     }
 
                 foreach (String fn in new String[] {
-                    "let_me_alone"
+                    "let_me_alone",
+                    "get_dist",
+                    "get_angle"
                 })
                     if (finalLine.ToLowerInvariant().Trim().Contains(fn + "(") || finalLine.ToLowerInvariant().Trim().Contains(fn + " ("))
                     {

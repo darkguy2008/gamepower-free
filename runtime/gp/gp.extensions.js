@@ -33,14 +33,6 @@ function shimRAF() {
 	       function(cb) { setTimeout(cb, 1e3/60); };
 }
 
-function rand(min, max) {
-	if(!max) {
-		max = min;
-		min = 0;
-	}
-	return Math.floor(Math.random()*(max-min+1)+min);
-}
-
 // http://stackoverflow.com/questions/280634/endswith-in-javascript
 String.prototype.endsWith = function(suffix) {
     return this.indexOf(suffix, this.length - suffix.length) !== -1;
@@ -171,54 +163,6 @@ var _canvas = null;
 
   window.onEachFrame = onEachFrame;
 })();
-
-// TODO: Which function is better?
-/*
-Array.prototype.filter = function(fn) {
-    var results = [];
-    var item;
-    for (var i = 0, len = this.length; i < len; i++) {
-    item = this[i];
-    if (fn(item)) results.push(item);
-    }
-    return results;
-}
-*/
-
-/*
-Array.prototype.filter = function(predicate) {
-  var results = [],
-    len = this.length,
-    i = 0;
-
-  for (; i < len; i++) {
-    var item = this[i];
-    if (predicate(item)) {
-      results.push(item);
-    }
-  }
-
-  return results;
-};
-*/
-
-/*
-Array.prototype.filter = function(fn) {
-    var i = 0;
-    var ln = this.length;
-    var results = [];
-
-    while (i < ln)
-    {
-        var item = this[i];
-        if (fn(item))
-            results.push(item);
-        i++;
-    }
-
-    return results;
-}
-*/
 
 // Shamelessly taken from lodash's filter function
 Array.prototype.filter = function(fn) {
