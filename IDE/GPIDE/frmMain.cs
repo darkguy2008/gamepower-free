@@ -15,6 +15,11 @@ namespace GPIDE
     public partial class frmMain : Form
     {
         public static string ApplicationPath { get { return new FileInfo(Assembly.GetEntryAssembly().Location).DirectoryName + "\\"; } }
+        public enum ECompileMode
+        {
+            Offline = 1,
+            Online = 2
+        }
 
         public bool FirstOpen = true;
         public String originalText = String.Empty;
@@ -23,6 +28,10 @@ namespace GPIDE
         public Dictionary<String, Dictionary<String, String>> Settings;
         public String DebugTempPath = String.Empty;
         public Process DebugProcess = null;
+        public ECompileMode CompileMode
+        {
+            get { return tsCompileMode.SelectedIndex == 0 ? ECompileMode.Offline : ECompileMode.Online; }
+        }
 
         public frmMain()
         {
@@ -31,6 +40,9 @@ namespace GPIDE
             NewFCTB();
             Reload();
             NewDebugSession();
+            tsCompileMode.Items.Add("Offline");
+            tsCompileMode.Items.Add("Online");
+            tsCompileMode.SelectedIndex = 0;
             this.FormClosed += FrmMain_FormClosed;
         }
 

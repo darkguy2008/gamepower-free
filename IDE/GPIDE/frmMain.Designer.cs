@@ -41,6 +41,7 @@
             this.tsPack = new System.Windows.Forms.ToolStripButton();
             this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
             this.tsSettings = new System.Windows.Forms.ToolStripButton();
+            this.tsCompileMode = new System.Windows.Forms.ToolStripComboBox();
             this.panel1 = new System.Windows.Forms.Panel();
             this.Editor = new FastColoredTextBoxNS.FastColoredTextBox();
             this.Toolbar.SuspendLayout();
@@ -58,6 +59,7 @@
             this.tsCompile,
             this.tsDebug,
             this.tsRun,
+            this.tsCompileMode,
             this.toolStripSeparator2,
             this.tsPack,
             this.toolStripSeparator3,
@@ -163,6 +165,11 @@
             this.tsSettings.Text = "Settings";
             this.tsSettings.Click += new System.EventHandler(this.tsSettings_Click);
             // 
+            // tsCompileMode
+            // 
+            this.tsCompileMode.Name = "tsCompileMode";
+            this.tsCompileMode.Size = new System.Drawing.Size(121, 25);
+            // 
             // panel1
             // 
             this.panel1.Controls.Add(this.Editor);
@@ -242,6 +249,7 @@
         private System.Windows.Forms.ToolStripButton tsDebug;
         private System.Windows.Forms.ToolStripButton tsPack;
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
+        private System.Windows.Forms.ToolStripComboBox tsCompileMode;
     }
 }
 

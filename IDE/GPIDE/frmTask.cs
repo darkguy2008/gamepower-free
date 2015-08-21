@@ -31,18 +31,30 @@ namespace GPIDE
 
         private bool Compile()
         {
-            frm.Reload();
-            String gpc = Path.GetFullPath(frm.Settings["Paths"]["GPC"]);
-            String args = String.Format("-i \"{0}\" -o \"{1}\"", frm.Filename, Path.ChangeExtension(frm.Filename, ".js"));
-            ProcessStartInfo pi = new ProcessStartInfo();
-            pi.Arguments = args;
-            pi.FileName = gpc;
-            pi.UseShellExecute = false;
-            pi.CreateNoWindow = true;
-            Process p = new Process() { StartInfo = pi };
-            p.Start();
-            p.WaitForExit();            
-            return true;
+            if (frm.CompileMode == frmMain.ECompileMode.Offline)
+            {
+                frm.Reload();
+                String gpc = Path.GetFullPath(frm.Settings["Paths"]["GPC"]);
+                String args = String.Format("-i \"{0}\" -o \"{1}\"", frm.Filename, Path.ChangeExtension(frm.Filename, ".js"));
+                ProcessStartInfo pi = new ProcessStartInfo();
+                pi.Arguments = args;
+                pi.FileName = gpc;
+                pi.UseShellExecute = false;
+                pi.CreateNoWindow = true;
+                Process p = new Process() { StartInfo = pi };
+                p.Start();
+                p.WaitForExit();
+                return true;
+            }
+            else
+            {
+                frm.Reload();
+
+                // TODO: Send file to web service
+
+                return true;
+            }
+            return false;
         }
 
         private void GenerateOutput()
