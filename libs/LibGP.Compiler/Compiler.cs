@@ -128,9 +128,11 @@ namespace gpc
             bool IsLocals = false;
             bool IsConstants = false;
             bool IsAddingVariables = false;
-            int iControl = 1;
-            int iControlLast = 0;
             usedId = new List<int>();
+
+            int idControlCond = 5000;
+            int idControlLoop = 10000;
+
             foreach (String sCommand in Cmd)
             {
                 String raw = sCommand;
@@ -165,7 +167,6 @@ namespace gpc
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControl = 1;
                             break;
                         case "process":
                             // If curCmd == null - extra end without opening if/loop/etc.
@@ -173,84 +174,68 @@ namespace gpc
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControl = 1;
                             break;
                         case "loop":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Loop, Id = iControl });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Loop, Id = idControlLoop });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControlLast = iControl;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlLoop++;
                             break;
 
                         case "repeat":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Repeat, Id = iControl });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Repeat, Id = idControlLoop });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControlLast = iControl;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlLoop++;
                             break;
                         case "until":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = iControlLast, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = idControlLoop, Arguments = sArguments });
                             curCmd = curCmd.Parent;
-                            //iControl--;
                             break;
 
                         case "while":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.While, Id = iControlLast, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.While, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControlLast = iControl;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlLoop++;
                             break;
-
 
                         case "from":
                             sArguments = raw.Substring(sKeyword.Length).Trim();
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.From, Id = iControl, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.From, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControlLast = iControl;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlLoop++;
                             break;
 
                         case "for":
                             sArguments = raw.Substring(sKeyword.Length).Trim();
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.For, Id = iControl, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.For, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControlLast = iControl;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlLoop++;
                             break;
 
                         case "if":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.If, Id = iControl, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.If, Id = idControlCond, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            iControl++; while (usedId.Contains(iControl)) { iControl++; }
-                            usedId.Add(iControl);
+                            idControlCond++;
                             break;
                         case "else":
-                            iControl-=2;
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = iControl });
+                            idControlCond--;
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = idControlCond });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            //iControl++;
                             break;
                         case "end":
-                            //iControl--;
                             curCmd = curCmd.Parent;
                             break;
 
@@ -289,7 +274,7 @@ namespace gpc
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Return, Id = 0, Arguments = sArguments });
                             break;
                         case "break":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = iControlLast });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = idControlLoop - 1 });
                             break;
                         case "frame":
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Frame, Arguments = sArguments });
@@ -381,6 +366,7 @@ namespace gpc
                     d2process.InternalVariables.Add("type", "\"" + d2process.Name + "\"");
                 d2process.InternalVariables.Add("ctype", "(typeof ctype === 'undefined') ? c_screen : ctype");
                 d2process.InternalVariables.Add("region", "(typeof region === 'undefined') ? 0 : region");
+                d2process.InternalVariables.Add("flags", "(typeof flags === 'undefined') ? 0 : flags");
 
                 if (d2process.Keyword != EKeyword.Program)
                     foreach (KeyValuePair<String, String> var in GlobalLocalVars)

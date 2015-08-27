@@ -4,7 +4,7 @@
 
 !define VERSIONMAJOR 0
 !define VERSIONMINOR 8
-!define VERSIONBUILD 1
+!define VERSIONBUILD 2
 
 !define HELPURL "http://gamepower.no-ip.org/"
 !define UPDATEURL "http://gamepower.no-ip.org/"
