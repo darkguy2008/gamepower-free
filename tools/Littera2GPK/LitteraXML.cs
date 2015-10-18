@@ -1,14 +1,12 @@
 ﻿namespace Littera2GPK
 {
 
-    /// <remarks/>
     [System.SerializableAttribute()]
     [System.ComponentModel.DesignerCategoryAttribute("code")]
     [System.Xml.Serialization.XmlTypeAttribute(AnonymousType = true)]
     [System.Xml.Serialization.XmlRootAttribute(Namespace = "", IsNullable = false)]
-    public partial class font
+    public class font
     {
-
         private fontInfo infoField;
 
         private fontCommon commonField;
@@ -439,7 +437,7 @@
 
         private fontCharsChar[] charField;
 
-        private byte countField;
+        private int countField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("char")]
@@ -457,7 +455,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public byte count
+        public int count
         {
             get
             {
@@ -647,7 +645,7 @@
 
         private fontKerningsKerning[] kerningField;
 
-        private byte countField;
+        private int countField;
 
         /// <remarks/>
         [System.Xml.Serialization.XmlElementAttribute("kerning")]
@@ -665,7 +663,7 @@
 
         /// <remarks/>
         [System.Xml.Serialization.XmlAttributeAttribute()]
-        public byte count
+        public int count
         {
             get
             {
