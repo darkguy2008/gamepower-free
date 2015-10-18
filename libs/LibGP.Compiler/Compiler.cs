@@ -1,4 +1,5 @@
-﻿using LibGP.Utils;
+﻿using LibGP.Compiler;
+using LibGP.Utils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,57 +7,6 @@ using System.Text.RegularExpressions;
 
 namespace gpc
 {
-    public enum EKeyword
-    {
-        Program = 1,
-        Global,
-        Begin,
-        End,
-        Process,
-        If,
-        Else,
-        Break,
-        Frame,
-        Loop,
-        Repeat,
-        Until,
-        While,
-        From,
-        For,
-        Local,
-        Private,
-        Const,
-        Return,
-    }
-
-    public enum EKeywordState
-    {
-        Begin = 1,
-        Initialize,
-        Condition,
-        Continue,
-        Break,
-        Return,
-        End,
-        EndElse
-    }
-
-    public enum ECompilerFlags
-    {
-        max_process = 1,
-        extended_conditions,
-        simple_conditions,
-        case_sensitive,
-        ignore_errors,
-        free_sintax,
-        no_strfix,
-        no_optimization,
-        no_range_check,
-        no_id_check,
-        no_null_check,
-        no_check
-    }
-
     public class GPCmd
     {
         public bool IsKeyword = false;
@@ -65,7 +15,7 @@ namespace gpc
         public String Arguments;
         public String Name;
         public String Raw;
-        public int Id;
+        public Guid Id;
         public List<GPCmd> Commands = new List<GPCmd>();
         public Dictionary<String, String> Variables = new Dictionary<String, String>();
         public Dictionary<String, String> InternalVariables = new Dictionary<String, String>();
@@ -73,7 +23,7 @@ namespace gpc
 
     public class JSLine
     {
-        public int idControl;
+        public Guid idControl;
         public EKeyword Keyword;
         public EKeywordState State;
         public String InnerCode;
@@ -82,7 +32,6 @@ namespace gpc
         public override string ToString()
         {
             return idControl + " | " + Keyword.ToString() + ", " + State.ToString() + " | " + Output + " (" + InnerCode + ")";
-            //return base.ToString();
         }
     }
 
@@ -94,7 +43,7 @@ namespace gpc
         public List<String> ProcessList = new List<String>();
         public Dictionary<ECompilerFlags, String> CompilerFlags = new Dictionary<ECompilerFlags, String>();
 
-        public String[] Keywords = new String[] {
+        public string[] Keywords = new string[] {
             "if",
             "else",
             "program",
@@ -115,21 +64,15 @@ namespace gpc
             "const",
             "return"
         };
+
         public List<KeyValuePair<String, String>> LocalVars = new List<KeyValuePair<String, String>>();
         public List<KeyValuePair<String, String>> ConstVars = new List<KeyValuePair<String, String>>();
         public List<KeyValuePair<String, String>> GlobalVars = new List<KeyValuePair<String, String>>();
         public List<KeyValuePair<String, String>> GlobalLocalVars = new List<KeyValuePair<String, String>>();
         
-        public enum EResourceType
-        {
-            FPG = 1,
-            FNT = 2,
-            Song = 3,
-            Audio = 4
-        }
         public Dictionary<String, EResourceType> Resources = new Dictionary<String, EResourceType>();
 
-        public List<int> usedId = new List<int>();
+        List<KeyValuePair<Guid, EKeyword>> controlId = new List<KeyValuePair<Guid, EKeyword>>();
 
         public GPCmd Compile(List<String> lines)
         {
@@ -146,11 +89,6 @@ namespace gpc
             bool IsLocals = false;
             bool IsConstants = false;
             bool IsAddingVariables = false;
-            usedId = new List<int>();
-
-            int idControlCond = 25000;
-            int idControlLoop = 50000;
-            List<int> usedCond = new List<int>();
 
             foreach (String sCommand in Cmd)
             {
@@ -182,6 +120,7 @@ namespace gpc
                     switch (sKeyword)
                     {
                         case "program":
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.Program));
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Program, Name = sName });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
@@ -189,74 +128,73 @@ namespace gpc
                             break;
                         case "process":
                             // If curCmd == null - extra end without opening if/loop/etc.
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.Process));
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Process, Name = sName, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
                         case "loop":
-                            idControlLoop++;
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Loop, Id = idControlLoop });
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.Loop));
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Loop, Id = controlId.Where(x => x.Value == EKeyword.Loop).Last().Key });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
 
                         case "repeat":
-                            idControlLoop++;
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Repeat, Id = idControlLoop });
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.Repeat));
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Repeat, Id = controlId.Where(x => x.Value == EKeyword.Repeat).Last().Key });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
                         case "until":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = idControlLoop, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = controlId.Where(x => x.Value == EKeyword.Repeat).Last().Key, Arguments = sArguments });
                             curCmd = curCmd.Parent;
                             break;
 
                         case "while":
-                            idControlLoop++;
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.While, Id = idControlLoop, Arguments = sArguments });
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.While));
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.While, Id = controlId.Where(x => x.Value == EKeyword.While).Last().Key, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
 
                         case "from":
-                            idControlLoop++;
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.From));
                             sArguments = raw.Substring(sKeyword.Length).Trim();
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.From, Id = idControlLoop, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.From, Id = controlId.Where(x => x.Value == EKeyword.From).Last().Key, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
 
                         case "for":
-                            idControlLoop++;
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.For));
                             sArguments = raw.Substring(sKeyword.Length).Trim();
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.For, Id = idControlLoop, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.For, Id = controlId.Where(x => x.Value == EKeyword.For).Last().Key, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
 
                         case "if":
-                            idControlCond++;
-                            while(usedCond.Contains(idControlCond)) { idControlCond += 1000; } usedCond.Add(idControlCond);
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.If, Id = idControlCond, Arguments = sArguments });
+                            controlId.Add(new KeyValuePair<Guid, EKeyword>(Guid.NewGuid(), EKeyword.If));
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.If, Id = controlId.Where(x => x.Value == EKeyword.If).Last().Key, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
                             break;
                         case "else":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = idControlCond });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = controlId.Where(x => x.Value == EKeyword.If).Last().Key });
                             //d2cmd = curCmd.Commands.Last();
                             //oldCmd = curCmd;
                             //curCmd = d2cmd;
                             break;
                         case "end":
-                            //idControlLoop--;
-                            idControlCond--;
+                            controlId.Remove(controlId.Last());
                             curCmd = curCmd.Parent;
                             break;
 
@@ -292,10 +230,16 @@ namespace gpc
                             break;
 
                         case "return":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Return, Id = 0, Arguments = sArguments });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Return, Id = Guid.Empty, Arguments = sArguments });
                             break;
                         case "break":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = idControlLoop });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = controlId.Where(x => 
+                                x.Value == EKeyword.Loop ||
+                                x.Value == EKeyword.For ||
+                                x.Value == EKeyword.From ||
+                                x.Value == EKeyword.While ||
+                                x.Value == EKeyword.Repeat
+                            ).Last().Key });
                             break;
                         case "frame":
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Frame, Arguments = sArguments });
