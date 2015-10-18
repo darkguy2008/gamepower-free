@@ -29,7 +29,7 @@ namespace gpc
         Return,
     }
 
-    public enum EKeywordState 
+    public enum EKeywordState
     {
         Begin = 1,
         Initialize,
@@ -37,7 +37,24 @@ namespace gpc
         Continue,
         Break,
         Return,
-        End
+        End,
+        EndElse
+    }
+
+    public enum ECompilerFlags
+    {
+        max_process = 1,
+        extended_conditions,
+        simple_conditions,
+        case_sensitive,
+        ignore_errors,
+        free_sintax,
+        no_strfix,
+        no_optimization,
+        no_range_check,
+        no_id_check,
+        no_null_check,
+        no_check
     }
 
     public class GPCmd
@@ -75,6 +92,7 @@ namespace gpc
         public String GPEngineVarName = "_gp";
         public String ProgramProcess = String.Empty;
         public List<String> ProcessList = new List<String>();
+        public Dictionary<ECompilerFlags, String> CompilerFlags = new Dictionary<ECompilerFlags, String>();
 
         public String[] Keywords = new String[] {
             "if",
@@ -130,8 +148,9 @@ namespace gpc
             bool IsAddingVariables = false;
             usedId = new List<int>();
 
-            int idControlCond = 5000;
-            int idControlLoop = 10000;
+            int idControlCond = 25000;
+            int idControlLoop = 50000;
+            List<int> usedCond = new List<int>();
 
             foreach (String sCommand in Cmd)
             {
@@ -176,19 +195,19 @@ namespace gpc
                             curCmd = d2cmd;
                             break;
                         case "loop":
+                            idControlLoop++;
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Loop, Id = idControlLoop });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlLoop++;
                             break;
 
                         case "repeat":
+                            idControlLoop++;
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Repeat, Id = idControlLoop });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlLoop++;
                             break;
                         case "until":
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Until, Id = idControlLoop, Arguments = sArguments });
@@ -196,46 +215,48 @@ namespace gpc
                             break;
 
                         case "while":
+                            idControlLoop++;
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.While, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlLoop++;
                             break;
 
                         case "from":
+                            idControlLoop++;
                             sArguments = raw.Substring(sKeyword.Length).Trim();
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.From, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlLoop++;
                             break;
 
                         case "for":
+                            idControlLoop++;
                             sArguments = raw.Substring(sKeyword.Length).Trim();
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.For, Id = idControlLoop, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlLoop++;
                             break;
 
                         case "if":
+                            idControlCond++;
+                            while(usedCond.Contains(idControlCond)) { idControlCond += 1000; } usedCond.Add(idControlCond);
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.If, Id = idControlCond, Arguments = sArguments });
                             d2cmd = curCmd.Commands.Last();
                             oldCmd = curCmd;
                             curCmd = d2cmd;
-                            idControlCond++;
                             break;
                         case "else":
-                            idControlCond--;
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd.Parent, IsKeyword = true, Keyword = EKeyword.Else, Id = idControlCond });
-                            d2cmd = curCmd.Commands.Last();
-                            oldCmd = curCmd;
-                            curCmd = d2cmd;
+                            //d2cmd = curCmd.Commands.Last();
+                            //oldCmd = curCmd;
+                            //curCmd = d2cmd;
                             break;
                         case "end":
+                            //idControlLoop--;
+                            idControlCond--;
                             curCmd = curCmd.Parent;
                             break;
 
@@ -274,7 +295,7 @@ namespace gpc
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Return, Id = 0, Arguments = sArguments });
                             break;
                         case "break":
-                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = idControlLoop - 1 });
+                            curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Break, Id = idControlLoop });
                             break;
                         case "frame":
                             curCmd.Commands.Add(new GPCmd() { Parent = curCmd, IsKeyword = true, Keyword = EKeyword.Frame, Arguments = sArguments });
@@ -511,6 +532,7 @@ namespace gpc
                             rv.Add(new JSLine() { idControl = cmd.Id, Keyword = EKeyword.If, State = EKeywordState.End });
                             break;
                         case EKeyword.Else:
+                            rv.Add(new JSLine() { idControl = cmd.Id, Keyword = EKeyword.If, State = EKeywordState.EndElse });
                             rv.Add(new JSLine() { idControl = cmd.Id, Keyword = EKeyword.If, State = EKeywordState.Condition });
                             rv.AddRange(PreProcess(cmd.Commands));
                             break;
@@ -682,10 +704,10 @@ namespace gpc
             // TODO: Implement different logic, for ELSEs and such
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.End).ToList().ForEach(x => x.Output = "/* ENDIF */");
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Condition).ToList().ForEach(x => x.Output = "/* IF -> ELSE */");
-            preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Condition)
+            preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.EndElse)
                 .ToList()
                 .ForEach(x =>
-                    x.Output = "/* ELSE */ " + GPProcessVarName + "._instLocal = " +
+                    x.Output = "/* END BEFORE ELSE */ " + GPProcessVarName + "._instLocal = " +
                     (preJSLines.IndexOf(
                         preJSLines.Where(y =>
                             y.idControl == x.idControl &&
@@ -695,6 +717,7 @@ namespace gpc
                     ) + 1
                     ) + ""
                 );
+
             preJSLines.Where(x => x.Keyword == EKeyword.If && x.State == EKeywordState.Begin)
                 .ToList()
                 .ForEach(x =>
