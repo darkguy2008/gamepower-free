@@ -768,6 +768,13 @@ namespace gpc
             string strReplace = @"collision(_gpp, ""$2"")";
             rv = rx.Replace(rv, strReplace);
 
+            // TODO: type is an internal variable and is taken into account too so type gets replaced with _gpp.type
+            // this should not happen though.
+            strRegex = @"(?<![\b.])collision[\( ]*\s*(_gpp.type)\s*(\w*)\s*[\)](?!\.)";
+            rx = new Regex(strRegex, RegexOptions.IgnoreCase);
+            strReplace = @"collision(_gpp, ""$2"")";
+            rv = rx.Replace(rv, strReplace);
+
             rv = rv.Replace("advance(", "advance(_gpp,", StringComparison.InvariantCultureIgnoreCase);
             rv = rv.Replace("xadvance(", "xadvance(_gpp,", StringComparison.InvariantCultureIgnoreCase);
             rv = rv.Replace("offset ", "", StringComparison.InvariantCultureIgnoreCase);
@@ -811,7 +818,8 @@ namespace gpc
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));
-                Resources.Add(filename, EResourceType.FPG);
+                if (!Resources.ContainsKey(filename))
+                    Resources.Add(filename, EResourceType.FPG);
                 return rv;
             }
 
@@ -819,7 +827,8 @@ namespace gpc
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));
-                Resources.Add(filename, EResourceType.FNT);
+                if(!Resources.ContainsKey(filename))
+                    Resources.Add(filename, EResourceType.FNT);
                 return rv;
             }
 
@@ -827,7 +836,8 @@ namespace gpc
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));
-                Resources.Add(filename, EResourceType.Song);
+                if (!Resources.ContainsKey(filename))
+                    Resources.Add(filename, EResourceType.Song);
                 return rv;
             }
 
@@ -835,7 +845,8 @@ namespace gpc
             {
                 filename = rv.Substring(rv.IndexOf("\"") + 1);
                 filename = filename.Substring(0, filename.LastIndexOf("\""));
-                Resources.Add(filename, EResourceType.Audio);
+                if (!Resources.ContainsKey(filename))
+                    Resources.Add(filename, EResourceType.Audio);
                 return rv;
             }
 
