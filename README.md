@@ -8,7 +8,7 @@ So you want to make games...
 
 Then look no further! This *may* very well be the game engine you've been looking for in ages.
 
-**Website:** http://gamepower.no-ip.org/
+**Screenshots:** https://www.moddb.com/engines/gamepower-engine/images/
 
 ## What?
 
